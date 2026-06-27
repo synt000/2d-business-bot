@@ -2,10 +2,13 @@ import telebot
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 import random
 from datetime import datetime
+from flask import Flask, request
 
 TOKEN = "8952729513:AAGP1kxZmZEWD6L2vkQ4_EzNL2vOtJsyQPQ"
 OWNER_ID = 6530901319
-bot = telebot.TeleBot(TOKEN)
+bot = telebot.TeleBot(TOKEN, threaded=False)
+
+app = Flask(__name__)
 
 DIGITS_DATA = {
     "buy_1kwet": "🎯 လူကြီးမင်း ဝယ်ယူထားသော [တစ်ကွက်ကောင်း] - ( 25 ) အပိုင်ရိုက်ပါဗျာ။",
@@ -106,6 +109,18 @@ def handle_payment_screenshot(message):
 def text_handler(message):
     if message.text.strip().lower() in ["hi", "hello", "ဟိုင်း"]: bot.reply_to(message, "Hello ဗျာ! SawYanNaing Bot မှ ကြိုဆိုပါတယ်။", reply_markup=get_main_menu())
 
-print("🚀 SawYanNaing BUSINESS MULTI-BOT is running...")
-bot.infinity_polling(timeout=10, long_polling_timeout=5)
-      
+# Vercel အတွက် Webhook လမ်းကြောင်းဆောက်ခြင်း
+@app.route('/' + TOKEN, methods=['POST'])
+def getMessage():
+    json_string = request.get_data().decode('utf-8')
+    update = telebot.types.Update.de_json(json_string)
+    bot.process_new_updates([update])
+    return "!", 200
+
+@app.route("/")
+def webhook():
+    bot.remove_webhook()
+    # ညီလေး၏ Vercel Link ကို အောက်ပါလင့်ခ်နေရာတွင် နောက်ဆုံးအဆင့်ကျမှ ထည့်ပါမည်
+    # bot.set_webhook(url='https://YOUR_VERCEL_URL/' + TOKEN)
+    return "Bot is alive!", 200
+        
