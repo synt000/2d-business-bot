@@ -109,7 +109,6 @@ def handle_payment_screenshot(message):
 def text_handler(message):
     if message.text.strip().lower() in ["hi", "hello", "ဟိုင်း"]: bot.reply_to(message, "Hello ဗျာ! SawYanNaing Bot မှ ကြိုဆိုပါတယ်။", reply_markup=get_main_menu())
 
-# Vercel အတွက် Webhook လမ်းကြောင်းဆောက်ခြင်း
 @app.route('/' + TOKEN, methods=['POST'])
 def getMessage():
     json_string = request.get_data().decode('utf-8')
@@ -120,7 +119,5 @@ def getMessage():
 @app.route("/")
 def webhook():
     bot.remove_webhook()
-    # ညီလေး၏ Vercel Link ကို အောက်ပါလင့်ခ်နေရာတွင် နောက်ဆုံးအဆင့်ကျမှ ထည့်ပါမည်
-    # bot.set_webhook(url='https://YOUR_VERCEL_URL/' + TOKEN)
-    return "Bot is alive!", 200
-        
+    bot.set_webhook(url='https://vercel.app' + TOKEN)
+    return "Bot is alive and webhook is connected!", 200
