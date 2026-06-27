@@ -4,8 +4,8 @@ import random
 from datetime import datetime
 from flask import Flask, request
 
-# 🔐 ညီလေး `@BotFather` ဆီကရလာတဲ့ Token အသစ်စက်စက်ကြီးကို ကွက်တိ ထည့်ပေးထားပါတယ်ဗျာ
-TOKEN = "8952729513:AAFRVdYI1zIN0OOAG4DqpGC5kBS6cnc_HBI"
+# 🔐 ညီလေးရဲ့ Token အသစ်စက်စက်ကြီးကို ကွက်တိ ထည့်ပေးထားပါတယ်ဗျာ
+TOKEN = "8952729513:AAHKyWqaQL1Mpulj17kNicnXmDTnauUjtyQ"
 OWNER_ID = 6530901319
 bot = telebot.TeleBot(TOKEN, threaded=False)
 
@@ -110,7 +110,8 @@ def handle_payment_screenshot(message):
 def text_handler(message):
     if message.text.strip().lower() in ["hi", "hello", "ဟိုင်း"]: bot.reply_to(message, "Hello ဗျာ! SawYanNaing Bot မှ ကြိုဆိုပါတယ်။", reply_markup=get_main_menu())
 
-@app.route('/', methods=['POST'])
+# 🔗 VERCEL WEBHOOK ROUTER နေရာအား လမ်းကြောင်းသီးသန့်ခွဲ၍ အမှန်ကန်ဆုံး ပြုပြင်ပေးထားပါသည်
+@app.route('/webhook', methods=['POST'])
 def getMessage():
     if request.headers.get('content-type') == 'application/json':
         json_string = request.get_data().decode('utf-8')
