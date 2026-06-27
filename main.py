@@ -76,7 +76,7 @@ def callback_listener(call):
         num = "09697514209" if call.data == "pay_kpay" else "09686563395"
         name = "Aung Win Oo" if call.data == "pay_kpay" else "Shwe Zin Tun"
         bank = "KBZ Pay" if call.data == "pay_kpay" else "Wave Pay"
-        bot.send_message(chat_id, f"📱 **{bank} ဖြင့် ငွေလွှဲရန် အချက်အလက်**\n\n📊 အမျိုးအစား - **{tn}**\n💰 ပမာဏ - **{pr}**\n\n🔹 နံပါတ် - `{num}` (Copy နှိပ်ပါ)\n🔹 အမည် - {name}\n\n⚠️ **ငွေလွှဲပြီးပါက ပြေစာ (Screenshot) ဓာတ်ပုံအား ပို့ပေးပါဗျာ။**")
+        bot.send_message(chat_id, f"📱 **{bank} ဖြင့် Ngwe Lwe ရန် အချက်အလက်**\n\n📊 အမျိုးအစား - **{tn}**\n💰 ပမာဏ - **{pr}**\n\n🔹 နံပါတ် - `{num}` (Copy နှိပ်ပါ)\n🔹 အမည် - {name}\n\n⚠️ **ငွေလွှဲပြီးပါက ပြေစာ (Screenshot) ဓာတ်ပုံအား ပို့ပေးပါဗျာ။**")
     elif call.data.startswith("approve_"):
         target_chat_id = int(call.data.split("_"))
         if target_chat_id in pending_payments:
@@ -109,7 +109,8 @@ def handle_payment_screenshot(message):
 def text_handler(message):
     if message.text.strip().lower() in ["hi", "hello", "ဟိုင်း"]: bot.reply_to(message, "Hello ဗျာ! SawYanNaing Bot မှ ကြိုဆိုပါတယ်။", reply_markup=get_main_menu())
 
-@app.route('/' + TOKEN, methods=['POST'])
+# 🔗 VERCEL WEBHOOK ROUTER နေရာအား လုံးဝအမှန်ကန်ဆုံး ပြုပြင်ပေးထားပါသည်
+@app.route('/', methods=['POST'])
 def getMessage():
     json_string = request.get_data().decode('utf-8')
     update = telebot.types.Update.de_json(json_string)
@@ -118,6 +119,5 @@ def getMessage():
 
 @app.route("/")
 def webhook():
-    bot.remove_webhook()
-    bot.set_webhook(url='https://vercel.app' + TOKEN)
     return "Bot is alive and webhook is connected!", 200
+                       
