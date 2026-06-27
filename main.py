@@ -5,7 +5,7 @@ from datetime import datetime
 from flask import Flask, request
 
 # 🔐 ညီလေး `@BotFather` ဆီကရလာတဲ့ Token အသစ်စက်စက်ကြီးကို ကွက်တိ ထည့်ပေးထားပါတယ်ဗျာ
-TOKEN = "8952729513:AAHKyWqaQL1Mpulj17kNicnXmDTnauUjtyQ"
+TOKEN = "8952729513:AAFOV0NdUg9r8qpmA-_1EmjmCoo3hYAxiyg"
 OWNER_ID = 6530901319
 bot = telebot.TeleBot(TOKEN, threaded=False)
 
