@@ -48,7 +48,7 @@ def start_command(message):
 def callback_listener(call):
     chat_id, msg_id = call.message.chat.id, call.message.message_id
     if call.data == "back_to_main":
-        bot.edit_message_text("👇 အောက်က မီနူးခလုတ်များကို နှိပ်၍ အသုံးပြုနိုင်ပါပြီဗျာ။", chat_id, msg_id, reply_markup=get_main_menu())
+        bot.edit_message_text("👇 အောက်က မိုဘိုင်းမီနူးခလုတ်များကို နှိပ်၍ အသုံးပြုနိုင်ပါပြီဗျာ။", chat_id, msg_id, reply_markup=get_main_menu())
     elif call.data == "menu_games":
         markup = InlineKeyboardMarkup()
         markup.row(InlineKeyboardButton("🎰 Lucky Wheel", callback_data="game_wheel"), InlineKeyboardButton("🔮 ဗေဒင်", callback_data="game_fortune"))
@@ -81,7 +81,7 @@ def callback_listener(call):
         target_chat_id = int(call.data.split("_"))
         if target_chat_id in pending_payments:
             selected_type = pending_payments[target_chat_id]
-            bot.send_message(target_chat_id, f"✅ **လူကြီးမင်း၏ ငွေလွှဲပြေစာကို အက်ဒမင်မှ အတည်ပြုပေးလိုက်ပါပြီဗျာ။**\n\n{DIGITS_DATA[selected_type]}", reply_markup=get_main_menu())
+            bot.send_message(target_chat_id, f"✅ **လူကြီးမင်း၏ Ngwe Lwe ပြေစာကို အက်ဒမင်မှ အတည်ပြုပေးလိုက်ပါပြီဗျာ။**\n\n{DIGITS_DATA[selected_type]}", reply_markup=get_main_menu())
             bot.edit_message_text(f"✅ User ID: `{target_chat_id}` ကို မွေးကွက် ထုတ်ပေးလိုက်ပါပြီ ဆရာကြီး။", chat_id, msg_id)
             try: del pending_payments[target_chat_id]
             except: pass
@@ -109,7 +109,6 @@ def handle_payment_screenshot(message):
 def text_handler(message):
     if message.text.strip().lower() in ["hi", "hello", "ဟိုင်း"]: bot.reply_to(message, "Hello ဗျာ! SawYanNaing Bot မှ ကြိုဆိုပါတယ်။", reply_markup=get_main_menu())
 
-# 🔗 VERCEL WEBHOOK ROUTER နေရာအား လုံးဝအမှန်ကန်ဆုံး ပြုပြင်ပေးထားပါသည်
 @app.route('/', methods=['POST'])
 def getMessage():
     json_string = request.get_data().decode('utf-8')
@@ -120,4 +119,4 @@ def getMessage():
 @app.route("/")
 def webhook():
     return "Bot is alive and webhook is connected!", 200
-                       
+    
