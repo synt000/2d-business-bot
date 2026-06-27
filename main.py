@@ -1,12 +1,11 @@
-import os
 import telebot
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 import random
 from datetime import datetime
 from flask import Flask, request
 
-# 🔐 လုံခြုံရေးအတွက် Token ကို Vercel Environment Variable မှ ဖတ်မည်
-TOKEN = os.getenv("BOT_TOKEN")
+# 🔐 ညီလေး `@BotFather` ဆီကရလာတဲ့ Token အသစ်စက်စက်ကြီးကို ကွက်တိ ထည့်ပေးထားပါတယ်ဗျာ
+TOKEN = "8952729513:AAHKyWqaQL1Mpulj17kNicnXmDTnauUjtyQ"
 OWNER_ID = 6530901319
 bot = telebot.TeleBot(TOKEN, threaded=False)
 
@@ -24,7 +23,7 @@ user_selections, pending_payments = {}, {}
 def get_main_menu():
     markup = InlineKeyboardMarkup()
     markup.row(InlineKeyboardButton("🎰 ကံစမ်းမဲနှင့် ဂိမ်းများ", callback_data="menu_games"), InlineKeyboardButton("📊 တွက်နည်းနှင့် ဗဟုသုတ", callback_data="menu_knowledge"))
-    markup.row(InlineKeyboardButton("🎯 မွေးဂဏန်း ဝယ်ရန်", callback_data="menu_buy_digits"), InlineKeyboardButton("💰 Price List", callback_data="tool_price"))
+    markup.row(InlineKeyboardButton("🎯 မွေးဂဏန်း ဝယ်ရန်", callback_data="menu_buy_digits"), InlineKeyboardButton("🛠️ အထွေထွေ Tools", callback_data="menu_tools"))
     return markup
 
 def get_digits_menu():
@@ -61,10 +60,15 @@ def callback_listener(call):
         markup.row(InlineKeyboardButton("📖 Formula Book", callback_data="know_formula"), InlineKeyboardButton("📅 2D Calendar Text", callback_data="know_calendar"))
         markup.row(InlineKeyboardButton("🔙 ပင်မမီနူးသို့", callback_data="back_to_main"))
         bot.edit_message_text("📊 **၂ဒီ တွက်နည်းနှင့် ဗဟုသုတစနစ်များ**", chat_id, msg_id, reply_markup=markup)
+    elif call.data == "menu_tools":
+        markup = InlineKeyboardMarkup()
+        markup.row(InlineKeyboardButton("⏱️ Time & Date", callback_data="tool_time"), InlineKeyboardButton("💰 Price List", callback_data="tool_price"))
+        markup.row(InlineKeyboardButton("🔙 ပင်မမီနူးသို့", callback_data="back_to_main"))
+        bot.edit_message_text("🛠️ **အထွေထွေနှင့် စနစ်ထိန်းချုပ်ရေး**", chat_id, msg_id, reply_markup=markup)
     elif call.data == "tool_price":
         bot.send_message(chat_id, "💰 **SawYanNaing မွေးကွက်စျေးနှုန်းများ**\n\n🌟 တစ်ကွက်ကောင်း - `15,000 ကျပ်`\n🔄 အခြားအကွက်များ - `10,000 ကျပ်`။")
     elif call.data == "menu_buy_digits":
-        bot.edit_message_text("🎯 **မိမိဝယ်ယူလိုသော မွေးဂဏန်းအမျိုးအစားကို ရွေးချယ်ပေးပါခင်ဗျာ。** 👇", chat_id, msg_id, reply_markup=get_digits_menu())
+        bot.edit_message_text("🎯 **မိမိဝယ်ယူလိုသော မွေးဂဏန်းအမျိုးအစားကို ရွေးချယ်ပေးပါခင်ဗျာ။** 👇", chat_id, msg_id, reply_markup=get_digits_menu())
     elif call.data in ["buy_1kwet", "buy_4lone", "buy_bk", "buy_pat"]:
         user_selections[chat_id] = call.data
         bot.edit_message_text("💰 **ငွေလွှဲအသုံးပြုမည့် မိုဘိုင်းဘဏ်စနစ်ကို ရွေးချယ်ပေးပါခင်ဗျာ။** 👇", chat_id, msg_id, reply_markup=get_bank_menu())
@@ -87,6 +91,7 @@ def callback_listener(call):
     elif call.data == "game_fortune": bot.send_message(chat_id, "🔮 **၂ဒီ ဗေဒင်:** ဒီနေ့ အကွက်ရှယ် တိုးမယ့်နေ့ပါဗျာ။")
     elif call.data == "know_formula": bot.send_message(chat_id, "📖 **Formula Book:** ထိပ်ပိတ်မြှောက်ခြင်း စနစ်တွက်နည်း")
     elif call.data == "know_calendar": bot.send_message(chat_id, "📅 **2D Calendar:** တနင်္လာ - 2/7 ဘရိတ်")
+    elif call.data == "tool_time": bot.send_message(chat_id, f"⏱️ **နာရီနှင့် ရက်စွဲ:** {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
 
 @bot.message_handler(content_types=['photo'])
 def handle_payment_screenshot(message):
@@ -105,7 +110,6 @@ def handle_payment_screenshot(message):
 def text_handler(message):
     if message.text.strip().lower() in ["hi", "hello", "ဟိုင်း"]: bot.reply_to(message, "Hello ဗျာ! SawYanNaing Bot မှ ကြိုဆိုပါတယ်။", reply_markup=get_main_menu())
 
-# 🌐 Vercel Webhook API Route (Serverless ကိုက်ညီစေရန် infinity_polling အား ဖယ်ရှားထားပါသည်)
 @app.route('/', methods=['POST'])
 def getMessage():
     if request.headers.get('content-type') == 'application/json':
