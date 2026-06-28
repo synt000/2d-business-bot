@@ -4,8 +4,8 @@ import random
 from datetime import datetime
 from flask import Flask, request
 
-# 🔐 ညီလေး၏ Token အသစ်စက်စက်ကြီးကို ကွက်တိ အသေသတ် ထည့်သွင်းပေးထားပါသည်
-TOKEN = "8952729513:AAG1Kh11MjS_u4dNghLIpjlssc_uyRJld3Q"
+# 🔐 ညီလေးရဲ့ Token အသစ်စက်စက်ကြီး ကွက်တိ ပါဝင်ပြီးသားဖြစ်ပါတယ်ဗျာ
+TOKEN = "8952729513:AAFnmakiB8i-K_g4_niUFJPKQZb9fYksKj4"
 OWNER_ID = 6530901319
 bot = telebot.TeleBot(TOKEN, threaded=False)
 
@@ -23,7 +23,7 @@ user_selections, pending_payments = {}, {}
 def get_main_menu():
     markup = InlineKeyboardMarkup()
     markup.row(InlineKeyboardButton("🎰 ကံစမ်းမဲနှင့် ဂိမ်းများ", callback_data="menu_games"), InlineKeyboardButton("📊 တွက်နည်းနှင့် ဗဟုသုတ", callback_data="menu_knowledge"))
-    markup.row(InlineKeyboardButton("🎯 မွေးဂဏန်း ဝယ်ရန်", callback_data="menu_buy_digits"), InlineKeyboardButton("💰 Price List", callback_data="tool_price"))
+    markup.row(InlineKeyboardButton("🎯 မွေးဂဏန်း ဝယ်ရန်", callback_data="menu_buy_digits"), InlineKeyboardButton("🛠️ အထွေထွေ Tools", callback_data="menu_tools"))
     return markup
 
 def get_digits_menu():
@@ -60,6 +60,11 @@ def callback_listener(call):
         markup.row(InlineKeyboardButton("📖 Formula Book", callback_data="know_formula"), InlineKeyboardButton("📅 2D Calendar Text", callback_data="know_calendar"))
         markup.row(InlineKeyboardButton("🔙 ပင်မမီနူးသို့", callback_data="back_to_main"))
         bot.edit_message_text("📊 **၂ဒီ တွက်နည်းနှင့် ဗဟုသုတစနစ်များ**", chat_id, msg_id, reply_markup=markup)
+    elif call.data == "menu_tools":
+        markup = InlineKeyboardMarkup()
+        markup.row(InlineKeyboardButton("⏱️ Time & Date", callback_data="tool_time"), InlineKeyboardButton("💰 Price List", callback_data="tool_price"))
+        markup.row(InlineKeyboardButton("🔙 ပင်မမီနူးသို့", callback_data="back_to_main"))
+        bot.edit_message_text("🛠️ **အထွေထွေနှင့် စနစ်ထိန်းချုပ်ရေး**", chat_id, msg_id, reply_markup=markup)
     elif call.data == "tool_price":
         bot.send_message(chat_id, "💰 **SawYanNaing မွေးကွက်စျေးနှုန်းများ**\n\n🌟 တစ်ကွက်ကောင်း - `15,000 ကျပ်`\n🔄 အခြားအကွက်များ - `10,000 ကျပ်`။")
     elif call.data == "menu_buy_digits":
@@ -105,12 +110,13 @@ def handle_payment_screenshot(message):
 def text_handler(message):
     if message.text.strip().lower() in ["hi", "hello", "ဟိုင်း"]: bot.reply_to(message, "Hello ဗျာ! SawYanNaing Bot မှ ကြိုဆိုပါတယ်။", reply_markup=get_main_menu())
 
-# 🌐 Vercel Serverless Platform နှင့် ၁၀၀% ကိုက်ညီသော Router ပုံစံအမှန်
-@app.route('/', methods=['POST', 'GET'])
-def getMessage():
+# 🌐 Vercel Routing စနစ်နှင့် အပြည့်အဝကိုက်ညီအောင် လမ်းကြောင်း (Route) အား ပြောင်းလဲပြင်ဆင်ထားပါသည်
+@app.route('/(.*)', methods=['POST', 'GET'])
+def getMessage(path=""):
     if request.method == 'POST':
         json_string = request.get_data().decode('utf-8')
         update = telebot.types.Update.de_json(json_string)
         bot.process_new_updates([update])
         return "!", 200
-    return "Bot Engine is Running...", 200
+    return "Bot Engine is Running perfectly...", 200
+    
