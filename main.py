@@ -3,8 +3,9 @@ from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 import random
 from datetime import datetime
 from flask import Flask, request
+import urllib.request
 
-# 🔐 ညီလေးရဲ့ Token အသစ်စက်စက်ကြီးကို ကွက်တိ ထည့်ပေးထားပါတယ်ဗျာ
+# 🔐 ညီလေး၏ Token အသစ်စက်စက်ကြီး ဖြစ်ပါတယ်ဗျာ
 TOKEN = "8952729513:AAHKyWqaQL1Mpulj17kNicnXmDTnauUjtyQ"
 OWNER_ID = 6530901319
 bot = telebot.TeleBot(TOKEN, threaded=False)
@@ -40,6 +41,16 @@ def get_bank_menu():
     markup.row(InlineKeyboardButton("📱 KBZ Pay နံပါတ်ရယူရန်", callback_data="pay_kpay"), InlineKeyboardButton("💵 Wave Pay နံပါတ်ရယူရန်", callback_data="pay_wave"))
     markup.row(InlineKeyboardButton("🔙 နောက်သို့", callback_data="menu_buy_digits"))
     return markup
+
+# 🛠️ Bot ထဲတွင် /webhook ဟု ပို့လိုက်ပါက လမ်းကြောင်းကို အလိုအလျောက် ချိတ်ဆက်ပေးမည့် စနစ်သစ်
+@bot.message_handler(commands=['webhook'])
+def set_webhook_auto(message):
+    try:
+        url = f"https://telegram.org{TOKEN}/setWebhook?url=https://vercel.app"
+        response = urllib.request.urlopen(url).read().decode()
+        bot.reply_to(message, f"✅ Webhook setup လမ်းကြောင်းကို အလိုအလျောက် အပိုင်ဖွင့်လှစ်လိုက်ပါပြီဗျာ!\n\n🤖 ဆာဗာတုံ့ပြန်ချက်: {response}")
+    except Exception as e:
+        bot.reply_to(message, f"❌ လမ်းကြောင်းဖွင့်ရာတွင် အခက်အခဲရှိပါသည်: {e}")
 
 @bot.message_handler(commands=['start'])
 def start_command(message):
@@ -110,7 +121,6 @@ def handle_payment_screenshot(message):
 def text_handler(message):
     if message.text.strip().lower() in ["hi", "hello", "ဟိုင်း"]: bot.reply_to(message, "Hello ဗျာ! SawYanNaing Bot မှ ကြိုဆိုပါတယ်။", reply_markup=get_main_menu())
 
-# 🔗 VERCEL WEBHOOK ROUTER နေရာအား လမ်းကြောင်းသီးသန့်ခွဲ၍ အမှန်ကန်ဆုံး ပြုပြင်ပေးထားပါသည်
 @app.route('/webhook', methods=['POST'])
 def getMessage():
     if request.headers.get('content-type') == 'application/json':
