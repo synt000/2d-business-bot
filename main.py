@@ -4,7 +4,7 @@ import random
 from datetime import datetime
 from flask import Flask, request
 
-# 🔐 ညီလေးရဲ့ Token အသစ်စက်စက်ကြီး ကွက်တိ ပါဝင်ပြီးသားဖြစ်ပါတယ်ဗျာ
+# 🔐 ညီလေး၏ Token အသစ်စက်စက်ကြီး ဖြစ်ပါတယ်ဗျာ
 TOKEN = "8952729513:AAFnmakiB8i-K_g4_niUFJPKQZb9fYksKj4"
 OWNER_ID = 6530901319
 bot = telebot.TeleBot(TOKEN, threaded=False)
@@ -110,13 +110,13 @@ def handle_payment_screenshot(message):
 def text_handler(message):
     if message.text.strip().lower() in ["hi", "hello", "ဟိုင်း"]: bot.reply_to(message, "Hello ဗျာ! SawYanNaing Bot မှ ကြိုဆိုပါတယ်။", reply_markup=get_main_menu())
 
-# 🌐 Vercel Routing စနစ်နှင့် အပြည့်အဝကိုက်ညီအောင် လမ်းကြောင်း (Route) အား ပြောင်းလဲပြင်ဆင်ထားပါသည်
-@app.route('/(.*)', methods=['POST', 'GET'])
-def getMessage(path=""):
+# 🌐 Vercel ရဲ့ ၄၀၄ Not Found ပိတ်ဆို့မှုအားလုံးကို လုံးဝ (၁၀၀%) ကျော်ဖြတ်နိုင်ရန် လမ်းကြောင်းအမှန် ပြင်ဆင်ပြီးပါပြီ
+@app.route('/', defaults={'path': ''}, methods=['POST', 'GET'])
+@app.route('/<path:path>', methods=['POST', 'GET'])
+def getMessage(path):
     if request.method == 'POST':
         json_string = request.get_data().decode('utf-8')
         update = telebot.types.Update.de_json(json_string)
         bot.process_new_updates([update])
         return "!", 200
     return "Bot Engine is Running perfectly...", 200
-    
