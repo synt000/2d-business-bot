@@ -4,7 +4,7 @@ import random
 from datetime import datetime
 from flask import Flask, request
 
-# 🔐 ညီလေး၏ Token အသစ်စက်စက်ကြီး ဖြစ်ပါတယ်ဗျာ
+# 🔐 ညီလေး၏ Token အသစ်စက်စက်ကြီး ကွက်တိ ပါဝင်ပြီးသားဖြစ်ပါတယ်ဗျာ
 TOKEN = "8952729513:AAFnmakiB8i-K_g4_niUFJPKQZb9fYksKj4"
 OWNER_ID = 6530901319
 bot = telebot.TeleBot(TOKEN, threaded=False)
@@ -82,7 +82,7 @@ def callback_listener(call):
         target_chat_id = int(call.data.split("_"))
         if target_chat_id in pending_payments:
             selected_type = pending_payments[target_chat_id]
-            bot.send_message(target_chat_id, f"✅ **လူကြီးမင်း၏ Ngwe Lwe ပြေစာကို အက်ဒမင်မှ အတည်ပြုပေးလိုက်ပါပြီဗျာ။**\n\n{DIGITS_DATA[selected_type]}", reply_markup=get_main_menu())
+            bot.send_message(target_chat_id, f"✅ **လူကြီးမင်း၏ Ngwe Lwe ပြေစာကို အက်ဒမမှ အတည်ပြုပေးလိုက်ပါပြီဗျာ။**\n\n{DIGITS_DATA[selected_type]}", reply_markup=get_main_menu())
             bot.edit_message_text(f"✅ User ID: `{target_chat_id}` ကို မွေးကွက် ထုတ်ပေးလိုက်ပါပြီ ဆရာကြီး။", chat_id, msg_id)
             try: del pending_payments[target_chat_id]
             except: pass
